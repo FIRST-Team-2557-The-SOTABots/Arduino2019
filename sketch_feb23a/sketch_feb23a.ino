@@ -1,3 +1,13 @@
+/* Mentor Code.
+Author: Dafydd Rhys-Jones
+Team:   2557 The SOTABots
+Last updated: 20190224
+## 
+Description:
+  Sample code to show a quick way to create arrays on pins and values, easy to call.
+  
+*/
+
 //adds libraries
 #include <VL53L1X.h>
 #include <Wire.h>
@@ -6,12 +16,27 @@
 VL53L1X TOF1;
 VL53L1X TOF2;
 
-//assosiates IR names with analog pins
-//#define sensor1 A0
-//#define sensor2 A1
-//#define sensor3 A2
-//#define sensor4 A3
-//#define sensor5 A4
+int IR_sensorPin[8] = {A0, A1, A2, A3, A4, A5, A6, A7}; // Analog Pins for distance sensors.
+int IR_lineFollowerPin[6] = {A8, A9, A10, A11, A12, A13};  // Analog Pins for line following sensors.
+
+// variable to store the value coming from the sensors.
+double  IR_sensorValue[8];
+double  IR_lineValue[6];
+bool    lineBool;
+bool    sensorBool;
+
+// Delay
+int delay_ms = 500;
+
+// Declare your variables.
+String  sensor;
+int     location;
+int     measurement;
+
+// Declare your thresholds.
+int sensorMin = -1;
+int lineMin = 1000;
+
 
 void setup() {
 
@@ -20,24 +45,30 @@ void setup() {
   digitalWrite(4, LOW);
   digitalWrite(5, LOW);
 
-  delay(500);
   Wire.begin();
 
+  // Configure pins as Inputs.
+  for (int i = 0; i < 8; i++){
+    pinMode(IR_sensorPin[i], INPUT);
+   }
+   for (int i = 0; i < 6; i++){
+    pinMode(IR_lineFollowerPin[i], INPUT);
+   }
+  // Set Booleans to False
+  lineBool = false;
+  sensorBool = false;
 
   Serial.begin (9600);
 
   pinMode(4, INPUT);
-  delay(150);
   TOF1.init(true);
-
-  delay(100);
+  delay(200);
   TOF1.setAddress(0x28);
 
   pinMode(5, INPUT);
-  delay(150);
   TOF2.init(true);
 
-  delay(100);
+  delay(200);
   TOF2.setAddress(0x31);
 
   TOF1.setDistanceMode(VL53L1X::Long);
@@ -51,56 +82,56 @@ void setup() {
   delay(150);
 
   byte count = 0;
-
-
   for (byte i = 1; i < 120; i++)
   {
-
     Wire.beginTransmission (i);
     if (Wire.endTransmission () == 0)
     {
-
-
       count++;
     }
   }
-
-
-
 }
 
-
 void loop() {
-  
-  //gets volts for IR
-//  float volts1 = analogRead(sensor1)*0.0048828125;
-//  float volts2 = analogRead(sensor2)*0.0048828125;
-//  float volts3 = analogRead(sensor3)*0.0048828125;
-//  float volts4 = analogRead(sensor4)*0.0048828125;
-//  float volts5 = analogRead(sensor5)*0.0048828125;
-  
-  //conversion from voltage to distance
-//  int distance1 = 13*pow(volts1, -1);
-//  int distance2 = 13*pow(volts2, -1);
-//  int distance3 = 13*pow(volts3, -1);
-//  int distance4 = 13*pow(volts4, -1);
-//  int distance5 = 13*pow(volts5, -1);
-  
-  //in mm
-  Serial.print("a");
+  Serial.print("Tof_1\t:\t");
   Serial.println(TOF1.read());
-  Serial.print("b");
-  Serial.println(TOF2.read());
-
-  //hopefully in mm
-//  Serial.print("c");
-//  Serial.println(distance1);
-//  Serial.print("d");
-//  Serial.println(distance2);
-//  Serial.print("e");
-//  Serial.println(distance3);
-//  Serial.print("f");
-//  Serial.println(distance4);
-//  Serial.print("g");
-//  Serial.println(distance5);
+//  Serial.print("ToF_2\t:\t");
+//  Serial.println(TOF2.read());
+  Serial.println();
+  for (int i = 0; i < 8; i++){
+      IR_sensorValue[i] = analogRead(IR_sensorPin[i]);
+    };
+      for (int i = 0; i < 6; i++){
+      IR_lineValue[i] = analogRead(IR_lineFollowerPin[i]);
+    };
+    for( int a = 0; a < 8; a = a + 1 ){
+      sensor = "IR";
+      location = a;
+      measurement = IR_sensorValue[a];
+      if (measurement < sensorMin){
+        sensorBool = true;
+      } else {
+        sensorBool = false;
+      }
+  //    Serial.print(sensor);
+  //    Serial.print(location);
+  //    Serial.print("\t:\t");
+  //    Serial.println(sensorBool);
+    };
+    for( int a = 0; a < 6; a = a + 1 ){
+      sensor = "Line";
+      location = a;
+      measurement = IR_lineValue[a];
+      if (measurement < lineMin){
+        lineBool = true;
+      } else {
+        lineBool = false;
+      }
+      Serial.print(sensor);
+      Serial.print(location);
+      Serial.print("\t:\t");
+      Serial.println(measurement);
+    }
+    Serial.println("\n\n\n\n");
+    delay(delay_ms);
 }

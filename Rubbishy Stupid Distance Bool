@@ -1,0 +1,160 @@
+int frontLeft[1] = {A0};
+int frontMid[1] = {A1};
+int frontRight[1] = {A2};
+int backLeft[1] = {A3};
+int backMid[1] = {A4};
+int backRight[1] = {A5};
+
+double fL[1];
+double fM[1];
+double fR[1];
+double bL[1];
+double bM[1];
+double bR[1];
+
+bool lineBoolfL;
+bool lineBoolfM;
+bool lineBoolfR;
+bool lineBoolbL;
+bool lineBoolbM;
+bool lineBoolbR;
+
+//bool fLBool;
+//bool fMBool;
+//bool fRBool;
+//bool bLBool;
+//bool bMBool;
+//bool bRBool;
+
+int measurementfL;
+int measurementfM;
+int measurementfR;
+int measurementbL;
+int measurementbM;
+int measurementbR;
+
+int lineMin= 960;
+int maxData = 1024;
+int minData = 100;
+
+int beforeDatafL;
+int currentDatafL;
+
+int beforeDatafM;
+int currentDatafM;
+
+int beforeDatafR;
+int currentDatafR;
+
+int beforeDatabL;
+int currentDatabL;
+
+int beforeDatabM;
+int currentDatabM;
+
+int beforeDatabR;
+int currentDatabR;
+
+void setup() {
+  // put your setup code here, to run once:
+  pinMode(frontLeft[1], INPUT);
+  pinMode(frontMid[1], INPUT);
+  pinMode(frontRight[1], INPUT);
+  pinMode(backLeft[1], INPUT);
+  pinMode(backMid[1], INPUT);
+  pinMode(backRight[1], INPUT);
+
+  lineBoolfL;
+  lineBoolfM;
+  lineBoolfR;
+  lineBoolbL;
+  lineBoolbM;
+  lineBoolbR;
+
+  Serial.begin (9600);
+
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  fL[1] = analogRead(frontLeft[1]);
+  fM[1] = analogRead(frontMid[1]);
+  fR[1] = analogRead(frontRight[1]);
+  bL[1] = analogRead(backLeft[1]);
+  bM[1] = analogRead(backMid[1]);
+  bR[1] = analogRead(backRight[1]);
+  
+  measurementfL = fL[1];
+  measurementfM = fM[1];
+  measurementfR = fR[1];
+  measurementbL = bL[1];
+  measurementbM = bM[1];
+  measurementbR = bR[1];
+
+  if(measurementfL < lineMin){
+        currentDatafL = measurementfL;
+        lineBoolfL = true;
+      } else {
+        beforeDatafL = measurementfL;
+        lineBoolfL = false;
+      }
+  if(measurementfM < lineMin){
+        currentDatafM = measurementfM;
+        lineBoolfM = true;
+      } else {
+        beforeDatafM = measurementfM;
+        lineBoolfM = false;
+      }
+  if(measurementfR < lineMin){
+        currentDatafR = measurementfR;
+        lineBoolfR = true;
+      } else {
+        beforeDatafR = measurementfR;
+        lineBoolfR = false;
+      }
+  if(measurementbL < lineMin){
+        currentDatabL = measurementbL;
+        lineBoolbL = true;
+      } else {
+        beforeDatabL = measurementbL;
+        lineBoolbL = false;
+      }
+  if(measurementbM < lineMin){
+        currentDatabM = measurementbM;
+        lineBoolbM = true;
+      } else {
+        beforeDatabM = measurementbM;
+        lineBoolbM = false;
+      }
+  if(measurementbR < lineMin){
+        currentDatabR = measurementbR;
+        lineBoolbR = true;
+      } else {
+        beforeDatabR = measurementbR;
+        lineBoolbR = false;
+      }
+
+  Serial.print("fL");
+  Serial.println(lineBoolfL);
+  Serial.println("\n");
+  
+  Serial.print("fM");
+  Serial.println(lineBoolfM);
+  Serial.println("\n");
+    
+  Serial.print("fR");
+  Serial.println(lineBoolfR);
+  Serial.println("\n");
+  
+  Serial.print("bL");
+  Serial.println(lineBoolbL);
+  Serial.println("\n");
+  
+  Serial.print("bM");
+  Serial.println(lineBoolbM);
+  Serial.println("\n");
+  
+  Serial.print("bR");
+  Serial.println(lineBoolbR);
+  Serial.println("\n");
+}
